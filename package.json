@@ -12,7 +12,7 @@
   "author": "z3rog <zerotoherorg@gmail.com>",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/z3rog/ts-axios.git"
   },
   "license": "MIT",
   "engines": {
