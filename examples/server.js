@@ -34,6 +34,18 @@ router.get('/simpleGet/get', function(req, res) {
     msg: 'hello world'
   })
 })
+router.post('/buffer/post', function(req, res) {
+  const msg = []
+  req.on('data', chunk => {
+    if (chunk) {
+      msg.push(chunk)
+    }
+  })
+
+  req.on('end', () => {
+    res.json(Buffer.concat(msg).toJSON())
+  })
+})
 
 app.use(router)
 

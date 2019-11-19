@@ -1,4 +1,4 @@
-import { isNullOrUndefined, isDate, isObject } from './util'
+import { isNullOrUndefined, isDate, isPlainObject } from './util'
 
 function encode(val: string): string {
   return encodeURIComponent(val)
@@ -33,7 +33,7 @@ export function buildURL(url: string, params?: object): string {
     values.forEach(value => {
       if (isDate(value)) {
         value = value.toISOString()
-      } else if (isObject(value)) {
+      } else if (isPlainObject(value)) {
         value = JSON.stringify(value)
       }
       parts.push(`${encode(key)}=${encode(value)}`)
