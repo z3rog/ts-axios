@@ -8,7 +8,7 @@ function encode(val: string): string {
     .replace(/%2C/gi, ',')
     .replace(/%20/g, '+')
     .replace(/%5B/gi, '[')
-    .replace(/%5B/gi, ']')
+    .replace(/%5D/gi, ']')
 }
 
 export function buildURL(url: string, params?: object): string {
@@ -36,7 +36,7 @@ export function buildURL(url: string, params?: object): string {
       } else if (isObject(value)) {
         value = JSON.stringify(value)
       }
-      parts.push(`${encode(key)}=${encode(value)}}`)
+      parts.push(`${encode(key)}=${encode(value)}`)
     })
   })
 

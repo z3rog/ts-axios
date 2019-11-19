@@ -29,6 +29,11 @@ router.get('/simple/get', function(req, res) {
     msg: 'hello world'
   })
 })
+router.get('/simpleGet/get', function(req, res) {
+  res.json({
+    msg: 'hello world'
+  })
+})
 
 app.use(router)
 
