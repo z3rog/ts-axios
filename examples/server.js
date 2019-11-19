@@ -47,6 +47,10 @@ router.post('/buffer/post', function(req, res) {
   })
 })
 
+router.post('/contentType/post', function(req, res) {
+  res.json(req.body)
+})
+
 app.use(router)
 
 const port = process.env.PORT || 8080
