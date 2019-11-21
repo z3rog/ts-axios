@@ -13,10 +13,11 @@ axios({
 axios({
   method: 'get',
   url: '/simpleGet/get',
+  responseType: 'json',
   params: {
     a: '@:$,[] '
   }
-})
+}).then(res => console.log(res))
 // hash
 axios({
   method: 'get',

@@ -1,4 +1,4 @@
-import { isPlainObject } from './util'
+import { isPlainObject, isNullOrUndefined } from './util'
 
 export function transformRequestData(data: any): any {
   if (isPlainObject(data)) {
@@ -8,7 +8,7 @@ export function transformRequestData(data: any): any {
 }
 
 export function transformResponseData(data: any): any {
-  if (!data) {
+  if (isNullOrUndefined(data)) {
     return
   }
   if (typeof data === 'string') {

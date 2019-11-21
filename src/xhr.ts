@@ -1,43 +1,35 @@
 import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from './types'
 import { parseHeaders } from './helpers/headers'
 
-export default function request(config: AxiosRequestConfig): AxiosPromise {
-  return new Promise(resolve => {
-    const { data = null, method = 'GET', url, responseType } = config
+export default function request(
+  config: AxiosRequestConfig
+): AxiosPromise {
+  return new Promise<AxiosResponse>((resolve, reject) => {
+    const { data = null, method = 'GET', url } = config
     const request = new XMLHttpRequest()
-    if (responseType) {
-      request.responseType = responseType
-    }
-    request.open(method, url, true)
 
+    setResponseType(request, config)
     setHeaders(request, config)
-
+    request.open(method, url, true)
     request.send(data)
-
-    request.onreadystatechange = () => {
-      if (request.readyState !== 4) {
-        return
-      }
-
-      const headers = parseHeaders(request.getAllResponseHeaders())
-      const { status, statusText, response, responseText } = request
-      const data = responseType !== 'text' ? response : responseText
-
-      const promiseResponse: AxiosResponse = {
-        status,
-        statusText,
-        config,
-        headers,
-        data,
-        request
-      }
-
-      resolve(promiseResponse)
-    }
+    addReadyStateChangeHandler(request, resolve, config)
+    addErrorHandler(request, reject)
   })
 }
 
-function setHeaders(request: XMLHttpRequest, config: AxiosRequestConfig) {
+function setResponseType(
+  request: XMLHttpRequest,
+  { responseType }: AxiosRequestConfig
+): void {
+  if (responseType) {
+    request.responseType = responseType
+  }
+}
+
+function setHeaders(
+  request: XMLHttpRequest,
+  config: AxiosRequestConfig
+): void {
   const { data = null, headers } = config
 
   Object.keys(headers).forEach((name) => {
@@ -48,4 +40,42 @@ function setHeaders(request: XMLHttpRequest, config: AxiosRequestConfig) {
       request.setRequestHeader(name, headers[name])
     }
   })
+}
+
+function addReadyStateChangeHandler(
+  request: XMLHttpRequest,
+  resolve: Function,
+  config: AxiosRequestConfig
+): void {
+  request.onreadystatechange = () => {
+    if (request.readyState !== 4) {
+      return
+    }
+    /**
+     * use destructuring assignment to get response/responseText from request
+     * will get error in some specific responseType
+     */
+    const { status, statusText } = request
+    const { responseType } = config
+    const data = responseType !== 'text' ? request.response : request.responseText
+    const headers = parseHeaders(request.getAllResponseHeaders())
+    const promiseResponse: AxiosResponse = {
+      status,
+      statusText,
+      config,
+      headers,
+      data,
+      request
+    }
+    resolve(promiseResponse)
+  }
+}
+
+function addErrorHandler(
+  request: XMLHttpRequest,
+  reject: Function
+): void {
+  request.onerror = () => {
+    reject(new Error('Network Error'))
+  }
 }
