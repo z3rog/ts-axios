@@ -26,3 +26,13 @@ export function transformHeadersData(headers: any, data: any): any {
 
   return headers
 }
+
+export function parseHeaders(headers: string): object {
+  const headerMap = Object.create(null)
+  headers.trim().split(/[\r\n]+/).forEach(line => {
+    const [key, value] = line.split(': ')
+    headerMap[key] = value
+  })
+
+  return headerMap
+}
