@@ -30,9 +30,12 @@ router.get('/simple/get', function(req, res) {
   })
 })
 router.get('/simpleGet/get', function(req, res) {
-  res.json({
-    msg: 'hello world'
-  })
+  setTimeout(() => {
+    res.json({
+      msg: 'hello world'
+    })
+
+  }, 3000)
 })
 router.post('/buffer/post', function(req, res) {
   const msg = []

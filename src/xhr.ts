@@ -3,21 +3,24 @@ import { parseHeaders } from './helpers/headers'
 
 export default function request(config: AxiosRequestConfig): AxiosPromise {
   return new Promise<AxiosResponse>((resolve, reject) => {
-    const { data = null, method = 'GET', url } = config
     const request = new XMLHttpRequest()
 
-    setResponseType(request, config)
+    setResponseTypeNTimeout(request, config)
     setHeaders(request, config)
-    addReadyStateChangeHandler(request, resolve, config)
+    addReadyStateChangeHandler(request, resolve, reject, config)
     addErrorHandler(request, reject)
-    request.open(method, url, true)
-    request.send(data)
+    addTimeoutHandler(request, reject, config)
+    openXHR(request, config)
+    sendXHRData(request, config)
   })
 }
 
-function setResponseType(request: XMLHttpRequest, { responseType }: AxiosRequestConfig): void {
+function setResponseTypeNTimeout(request: XMLHttpRequest, { responseType, timeout }: AxiosRequestConfig): void {
   if (responseType) {
     request.responseType = responseType
+  }
+  if (timeout) {
+    request.timeout = timeout
   }
 }
 
@@ -37,10 +40,14 @@ function setHeaders(request: XMLHttpRequest, config: AxiosRequestConfig): void {
 function addReadyStateChangeHandler(
   request: XMLHttpRequest,
   resolve: Function,
+  reject: Function,
   config: AxiosRequestConfig
 ): void {
   request.onreadystatechange = () => {
-    if (request.readyState !== 4) {
+    if (
+      request.readyState !== 4 ||
+      request.status === 0
+    ) {
       return
     }
     /**
@@ -59,7 +66,20 @@ function addReadyStateChangeHandler(
       data,
       request
     }
-    resolve(promiseResponse)
+    handlePromiseResponse(promiseResponse, resolve, reject)
+  }
+
+  function handlePromiseResponse(
+    response: AxiosResponse,
+    resolve: Function,
+    reject: Function
+  ) {
+    const { status } = response
+    if (status >= 200 && status < 300) {
+      resolve(response)
+    } else {
+      reject(new Error(`Request failed with status code ${status}`))
+    }
   }
 }
 
@@ -67,4 +87,18 @@ function addErrorHandler(request: XMLHttpRequest, reject: Function): void {
   request.onerror = () => {
     reject(new Error('Network Error'))
   }
+}
+
+function addTimeoutHandler(request: XMLHttpRequest, reject: Function, { timeout }: AxiosRequestConfig): void {
+  request.ontimeout = () => {
+    reject(new Error(`Timeout ${timeout}ms exceeded`))
+  }
+}
+
+function openXHR(request: XMLHttpRequest, { method = 'GET', url }: AxiosRequestConfig): void {
+  request.open(method, url, true)
+}
+
+function sendXHRData(request: XMLHttpRequest, { data = null}: AxiosRequestConfig): void {
+  request.send(data)
 }

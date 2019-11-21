@@ -8,12 +8,13 @@ axios({
     a: [1, 2],
     b: date
   }
-})
+}).then(res => console.log(res))
 // special characters
 axios({
   method: 'get',
   url: '/simpleGet/get',
   responseType: 'json',
+  timeout: 1000,
   params: {
     a: '@:$,[] '
   }
@@ -25,7 +26,7 @@ axios({
   params: {
     a: 1
   }
-})
+}).then(res => console.log(res))
 
 // null
 axios({
@@ -35,4 +36,4 @@ axios({
     a: 1,
     b: null
   }
-})
+}).then(res => console.log(res))
