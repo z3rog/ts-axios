@@ -1,38 +1,30 @@
 import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from './types'
 import { parseHeaders } from './helpers/headers'
 
-export default function request(
-  config: AxiosRequestConfig
-): AxiosPromise {
+export default function request(config: AxiosRequestConfig): AxiosPromise {
   return new Promise<AxiosResponse>((resolve, reject) => {
     const { data = null, method = 'GET', url } = config
     const request = new XMLHttpRequest()
 
     setResponseType(request, config)
     setHeaders(request, config)
-    request.open(method, url, true)
-    request.send(data)
     addReadyStateChangeHandler(request, resolve, config)
     addErrorHandler(request, reject)
+    request.open(method, url, true)
+    request.send(data)
   })
 }
 
-function setResponseType(
-  request: XMLHttpRequest,
-  { responseType }: AxiosRequestConfig
-): void {
+function setResponseType(request: XMLHttpRequest, { responseType }: AxiosRequestConfig): void {
   if (responseType) {
     request.responseType = responseType
   }
 }
 
-function setHeaders(
-  request: XMLHttpRequest,
-  config: AxiosRequestConfig
-): void {
+function setHeaders(request: XMLHttpRequest, config: AxiosRequestConfig): void {
   const { data = null, headers } = config
 
-  Object.keys(headers).forEach((name) => {
+  Object.keys(headers).forEach(name => {
     // if data === null, no need to set Content-Type
     if (data === null && name.toLowerCase() === 'content-type') {
       delete headers[name]
@@ -71,10 +63,7 @@ function addReadyStateChangeHandler(
   }
 }
 
-function addErrorHandler(
-  request: XMLHttpRequest,
-  reject: Function
-): void {
+function addErrorHandler(request: XMLHttpRequest, reject: Function): void {
   request.onerror = () => {
     reject(new Error('Network Error'))
   }
