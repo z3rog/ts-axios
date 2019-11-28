@@ -1,5 +1,6 @@
 import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from './types'
 import { parseHeaders } from './helpers/headers'
+import { createAxiosError } from './helpers/error'
 
 export default function request(config: AxiosRequestConfig): AxiosPromise {
   return new Promise<AxiosResponse>((resolve, reject) => {
@@ -8,7 +9,7 @@ export default function request(config: AxiosRequestConfig): AxiosPromise {
     setResponseTypeNTimeout(request, config)
     setHeaders(request, config)
     addReadyStateChangeHandler(request, resolve, reject, config)
-    addErrorHandler(request, reject)
+    addErrorHandler(request, reject, config)
     addTimeoutHandler(request, reject, config)
     openXHR(request, config)
     sendXHRData(request, config)
@@ -66,11 +67,12 @@ function addReadyStateChangeHandler(
       data,
       request
     }
-    handlePromiseResponse(promiseResponse, resolve, reject)
+    handlePromiseResponse(promiseResponse, config, resolve, reject)
   }
 
   function handlePromiseResponse(
     response: AxiosResponse,
+    config: AxiosRequestConfig,
     resolve: Function,
     reject: Function
   ) {
@@ -78,20 +80,46 @@ function addReadyStateChangeHandler(
     if (status >= 200 && status < 300) {
       resolve(response)
     } else {
-      reject(new Error(`Request failed with status code ${status}`))
+      reject(
+        createAxiosError(
+          config,
+          `Request failed with status code ${status}`,
+          null,
+          request,
+          response
+        )
+      )
     }
   }
 }
 
-function addErrorHandler(request: XMLHttpRequest, reject: Function): void {
+function addErrorHandler(
+  request: XMLHttpRequest,
+  reject: Function,
+  config: AxiosRequestConfig
+): void {
   request.onerror = () => {
-    reject(new Error('Network Error'))
+    reject(
+      createAxiosError(
+        config,
+        'Network Error',
+        null,
+        request,
+      )
+    )
   }
 }
 
-function addTimeoutHandler(request: XMLHttpRequest, reject: Function, { timeout }: AxiosRequestConfig): void {
+function addTimeoutHandler(request: XMLHttpRequest, reject: Function, config: AxiosRequestConfig): void {
   request.ontimeout = () => {
-    reject(new Error(`Timeout ${timeout}ms exceeded`))
+    reject(
+      createAxiosError(
+        config,
+        `Timeout ${config.timeout}ms exceeded`,
+        'ECONNABORTED',
+        request
+      )
+    )
   }
 }
 

@@ -1,4 +1,5 @@
-import axios from '../../src/index'
+import axios, { AxiosError } from '../../src/index'
+
 const date = new Date()
 // array, date
 axios({
@@ -18,7 +19,14 @@ axios({
   params: {
     a: '@:$,[] '
   }
-}).then(res => console.log(res))
+})
+.then(res => console.log(res))
+.catch((e: AxiosError) => {
+  console.error(e)
+  console.log(e.message)
+  console.log(e.config)
+  console.log(e.isAxiosError)
+})
 // hash
 axios({
   method: 'get',
