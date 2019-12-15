@@ -124,7 +124,7 @@ function addTimeoutHandler(request: XMLHttpRequest, reject: Function, config: Ax
 }
 
 function openXHR(request: XMLHttpRequest, { method = 'GET', url }: AxiosRequestConfig): void {
-  request.open(method, url, true)
+  request.open(method, url!, true)
 }
 
 function sendXHRData(request: XMLHttpRequest, { data = null}: AxiosRequestConfig): void {
