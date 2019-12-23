@@ -24,40 +24,60 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 const router = express.Router()
 
-router.get('/simple/get', function(req, res) {
-  res.json({
-    msg: 'hello world'
-  })
-})
-router.get('/simpleGet/get', function(req, res) {
-  setTimeout(() => {
-    res.json({
-      msg: 'hello world'
-    })
-
-  }, 3000)
-})
-router.post('/buffer/post', function(req, res) {
-  const msg = []
-  req.on('data', chunk => {
-    if (chunk) {
-      msg.push(chunk)
-    }
-  })
-
-  req.on('end', () => {
-    res.json(Buffer.concat(msg).toJSON())
-  })
-})
-
-router.post('/contentType/post', function(req, res) {
-  res.json(req.body)
-})
+createSimpleRouter()
+createBufferRouter()
+createContentRouter()
+createExtendRouter()
 
 app.use(router)
 
-const port = process.env.PORT || 8080
+const port = process.env.PORT || 8000
 
 module.exports = app.listen(port, () => {
+  console.clear()
   console.log(`Server listening on http://localhost:${port}`)
 })
+
+
+function createSimpleRouter() {
+  router.get('/simple/get', function(req, res) {
+    res.json({
+      msg: 'hello world'
+    })
+  })
+  router.get('/simpleGet/get', function(req, res) {
+    setTimeout(() => {
+      res.json({
+        msg: 'hello world'
+      })
+
+    }, 3000)
+  })
+}
+
+function createBufferRouter() {
+  router.post('/buffer/post', function(req, res) {
+    const msg = []
+    req.on('data', chunk => {
+      if (chunk) {
+        msg.push(chunk)
+      }
+    })
+
+    req.on('end', () => {
+      res.json(Buffer.concat(msg).toJSON())
+    })
+  })
+}
+
+function createContentRouter() {
+  router.post('/contentType/post', function(req, res) {
+    res.json(req.body)
+  })
+}
+
+function createExtendRouter() {
+  router.post('/extend/post', function(req, res) {
+    res.json(req.body)
+  })
+}

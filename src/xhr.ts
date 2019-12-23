@@ -6,12 +6,12 @@ export default function request(config: AxiosRequestConfig): AxiosPromise {
   return new Promise<AxiosResponse>((resolve, reject) => {
     const request = new XMLHttpRequest()
 
+    openXHR(request, config)
     setResponseTypeNTimeout(request, config)
     setHeaders(request, config)
     addReadyStateChangeHandler(request, resolve, reject, config)
     addErrorHandler(request, reject, config)
     addTimeoutHandler(request, reject, config)
-    openXHR(request, config)
     sendXHRData(request, config)
   })
 }
