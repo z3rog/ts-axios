@@ -74,4 +74,5 @@ export interface Axios {
 // Interface as Function Type
 export interface AxiosInstance extends Axios {
   (config: AxiosRequestConfig): AxiosPromise
+  (url: string, config?: AxiosRequestConfig): AxiosPromise
 }
