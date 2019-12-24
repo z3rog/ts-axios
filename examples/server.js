@@ -80,4 +80,14 @@ function createExtendRouter() {
   router.post('/extend/post', function(req, res) {
     res.json(req.body)
   })
+  router.get('/extend/user', function(req, res) {
+    res.json({
+      code: 0,
+      message: 'success',
+      data: {
+        name: 'Roger',
+        age: 22
+      }
+    })
+  })
 }
