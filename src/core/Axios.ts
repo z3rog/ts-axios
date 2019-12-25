@@ -1,7 +1,27 @@
-import { AxiosRequestConfig, AxiosPromise, Method } from "../types";
+import { AxiosRequestConfig, AxiosPromise, Method, AxiosResponse, ResolvedFn, RejectedFn } from "../types";
 import dispatchRequest  from './dispatchRequest'
+import InterceptorManager from '../core/interceptorManager'
 
+interface Interceptors {
+  request: InterceptorManager<AxiosRequestConfig>,
+  response: InterceptorManager<AxiosResponse>
+}
+
+interface PromiseChain<T> {
+  resolve: ResolvedFn<T> | ((config: AxiosRequestConfig) => AxiosResponse)
+  reject?: RejectedFn
+}
 export default class Axios {
+
+  interceptors: Interceptors
+
+  constructor() {
+    this.interceptors = {
+      request: new InterceptorManager<AxiosRequestConfig>(),
+      response: new InterceptorManager<AxiosResponse>()
+    }
+  }
+
   request(url: any, config?: any): AxiosPromise {
     // overloading implements here
     if (typeof url === 'string') {
@@ -12,7 +32,28 @@ export default class Axios {
     } else {
       config = url
     }
-    return dispatchRequest(config)
+
+    const chain: PromiseChain<any>[] = [{
+      resolve: dispatchRequest,
+      reject: undefined
+    }]
+
+    this.interceptors.request.forEach(interceptor => {
+      chain.unshift(interceptor)
+    })
+
+    this.interceptors.response.forEach(interceptor => {
+      chain.push(interceptor)
+    })
+
+    let promise = Promise.resolve(config)
+
+    while(chain.length) {
+      const { resolve, reject } = chain.shift()!
+      promise = promise.then(resolve, reject)
+    }
+
+    return promise
   }
 
   get(url: string, config?: AxiosRequestConfig): AxiosPromise {

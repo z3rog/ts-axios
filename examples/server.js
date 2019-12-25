@@ -28,6 +28,7 @@ createSimpleRouter()
 createBufferRouter()
 createContentRouter()
 createExtendRouter()
+createInterceptorRouter()
 
 app.use(router)
 
@@ -89,5 +90,11 @@ function createExtendRouter() {
         age: 22
       }
     })
+  })
+}
+
+function createInterceptorRouter() {
+  router.get('/interceptor/get', (req, res) => {
+    res.end('hello')
   })
 }

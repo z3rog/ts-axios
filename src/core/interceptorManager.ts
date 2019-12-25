@@ -27,7 +27,7 @@ export default class InterceptorManager<T> {
     }
   }
 
-  forEach(fn: (interceptor: Interceptor<T>) => void):void {
+  forEach(fn: (interceptor: Interceptor<T>) => void): void {
     this.interceptors.forEach(interceptor =>
       interceptor !== null && fn(interceptor)
     )
