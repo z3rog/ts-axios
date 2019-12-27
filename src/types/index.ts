@@ -14,21 +14,32 @@ export type Method =
   | 'patch'
   | 'PATCH'
 
+export type AxiosRequestConfigKey =
+  | 'url'
+  | 'method'
+  | 'data'
+  | 'params'
+  | 'headers'
+  | 'responseType'
+  | 'timeout'
+
 export interface AxiosRequestConfig {
   url?: string
   method?: string
   data?: any
-  params?: any,
-  headers?: any,
-  responseType?: XMLHttpRequestResponseType,
+  params?: any
+  headers?: any
+  responseType?: XMLHttpRequestResponseType
   timeout?: number
+
+  [propName: string]: any
 }
 
 export interface XHRRequestConfig {
   url: string
   method: string
   data?: any
-  params?: any,
+  params?: any
   headers?: any
 }
 
@@ -37,17 +48,15 @@ export interface AxiosResponse<T = any> {
   status: number
   statusText: string
   headers: any
-  config: AxiosRequestConfig,
+  config: AxiosRequestConfig
   request: XMLHttpRequest
 }
 
-export interface AxiosPromise<T = any> extends Promise<AxiosResponse<T>> {
-
-}
+export interface AxiosPromise<T = any> extends Promise<AxiosResponse<T>> {}
 
 export interface AxiosError extends Error {
   isAxiosError: boolean
-  config: AxiosRequestConfig,
+  config: AxiosRequestConfig
   code?: string | null
   request?: any
   response?: AxiosResponse
@@ -57,7 +66,7 @@ export interface Axios {
   defaults: AxiosRequestConfig
 
   interceptors: {
-    request: AxiosInterceptorManager<AxiosRequestConfig>,
+    request: AxiosInterceptorManager<AxiosRequestConfig>
     response: AxiosInterceptorManager<AxiosResponse>
   }
 
