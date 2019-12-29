@@ -1,8 +1,8 @@
-import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from '../types'
+import { AxiosRequestConfig, AxiosPromise, AxiosResponse, Method } from '../types'
 import xhr from '../xhr'
 import { buildURL } from '../helpers/url'
 import { transformRequestData, transformResponseData } from '../helpers/data'
-import { transformHeadersData } from '../helpers/headers'
+import { transformHeadersData, flatternHeaders } from '../helpers/headers'
 
 function dispatchRequest(config: AxiosRequestConfig): AxiosPromise {
   processConfig(config)
@@ -14,6 +14,7 @@ function processConfig(config: AxiosRequestConfig): void {
   config.url = transformURL(config)
   config.headers = transformHeaders(config) // call before transform data
   config.data = transformData(config)
+  config.headers = flatternHeaders(config.headers, config.method as Method)
 }
 function transformMethod(config: AxiosRequestConfig): string {
   return config.method ? config.method.toUpperCase() : 'GET'
