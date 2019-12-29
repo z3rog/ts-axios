@@ -22,6 +22,8 @@ export type AxiosRequestConfigKey =
   | 'headers'
   | 'responseType'
   | 'timeout'
+  | 'transformRequest'
+  | 'transformResponse'
 
 export interface AxiosRequestConfig {
   url?: string
@@ -31,10 +33,15 @@ export interface AxiosRequestConfig {
   headers?: any
   responseType?: XMLHttpRequestResponseType
   timeout?: number
+  transformRequest?: AxiosTransformer | AxiosTransformer[]
+  transformResponse?: AxiosTransformer | AxiosTransformer[]
 
   [propName: string]: any
 }
 
+export interface AxiosTransformer {
+  (data: any, headers: any): any
+}
 export interface XHRRequestConfig {
   url: string
   method: string

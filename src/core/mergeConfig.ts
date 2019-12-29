@@ -1,5 +1,6 @@
 import { AxiosRequestConfig, AxiosRequestConfigKey } from '../types'
 import { isPlainObject, deepMerge } from '../helpers/util'
+import { debug } from 'util'
 
 function defaultStrategy(val1: any, val2: any): any {
   return typeof val2 !== undefined ? val2 : val1
@@ -24,7 +25,14 @@ function deepMergeStrategy(val1: any, val2: any): any {
 }
 
 const strategyMap = Object.create(null)
-const defaultStrategyKeys: AxiosRequestConfigKey[] = ['method', 'params', 'responseType', 'timeout']
+const defaultStrategyKeys: AxiosRequestConfigKey[] = [
+  'method',
+  'params',
+  'responseType',
+  'timeout',
+  'transformRequest',
+  'transformResponse'
+]
 const fromVal2StrategyKeys: AxiosRequestConfigKey[] = ['url', 'params', 'data']
 const deepMergeStrategyKeys: AxiosRequestConfigKey[] = ['headers']
 
