@@ -17,7 +17,7 @@ function processConfig(config: AxiosRequestConfig): void {
   config.headers = flatternHeaders(config.headers, config.method as Method)
 }
 function transformMethod(config: AxiosRequestConfig): string {
-  return config.method ? config.method.toUpperCase() : 'GET'
+  return config.method ? config.method.toLowerCase() : 'get'
 }
 function transformURL(config: AxiosRequestConfig): string {
   const { url, params } = config
@@ -39,4 +39,3 @@ function transformResponse(response: AxiosResponse): AxiosResponse {
 }
 
 export default dispatchRequest
-
