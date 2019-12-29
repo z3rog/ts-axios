@@ -16,7 +16,10 @@ export default function request(config: AxiosRequestConfig): AxiosPromise {
   })
 }
 
-function setResponseTypeNTimeout(request: XMLHttpRequest, { responseType, timeout }: AxiosRequestConfig): void {
+function setResponseTypeNTimeout(
+  request: XMLHttpRequest,
+  { responseType, timeout }: AxiosRequestConfig
+): void {
   if (responseType) {
     request.responseType = responseType
   }
@@ -45,10 +48,7 @@ function addReadyStateChangeHandler(
   config: AxiosRequestConfig
 ): void {
   request.onreadystatechange = () => {
-    if (
-      request.readyState !== 4 ||
-      request.status === 0
-    ) {
+    if (request.readyState !== 4 || request.status === 0) {
       return
     }
     /**
@@ -99,34 +99,26 @@ function addErrorHandler(
   config: AxiosRequestConfig
 ): void {
   request.onerror = () => {
-    reject(
-      createAxiosError(
-        config,
-        'Network Error',
-        null,
-        request,
-      )
-    )
+    reject(createAxiosError(config, 'Network Error', null, request))
   }
 }
 
-function addTimeoutHandler(request: XMLHttpRequest, reject: Function, config: AxiosRequestConfig): void {
+function addTimeoutHandler(
+  request: XMLHttpRequest,
+  reject: Function,
+  config: AxiosRequestConfig
+): void {
   request.ontimeout = () => {
     reject(
-      createAxiosError(
-        config,
-        `Timeout ${config.timeout}ms exceeded`,
-        'ECONNABORTED',
-        request
-      )
+      createAxiosError(config, `Timeout ${config.timeout}ms exceeded`, 'ECONNABORTED', request)
     )
   }
 }
 
 function openXHR(request: XMLHttpRequest, { method = 'GET', url }: AxiosRequestConfig): void {
-  request.open(method, url!, true)
+  request.open(method.toUpperCase(), url!, true)
 }
 
-function sendXHRData(request: XMLHttpRequest, { data = null}: AxiosRequestConfig): void {
+function sendXHRData(request: XMLHttpRequest, { data = null }: AxiosRequestConfig): void {
   request.send(data)
 }
