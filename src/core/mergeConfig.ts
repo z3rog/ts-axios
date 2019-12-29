@@ -1,13 +1,12 @@
 import { AxiosRequestConfig, AxiosRequestConfigKey } from '../types'
 import { isPlainObject, deepMerge } from '../helpers/util'
-import { debug } from 'util'
 
 function defaultStrategy(val1: any, val2: any): any {
-  return typeof val2 !== undefined ? val2 : val1
+  return typeof val2 !== 'undefined' ? val2 : val1
 }
 
 function fromVal2Strategy(_: any, val2: any): any {
-  if (typeof val2 !== undefined) {
+  if (typeof val2 !== 'undefined') {
     return val2
   }
 }
