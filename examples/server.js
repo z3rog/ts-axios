@@ -29,6 +29,7 @@ createBufferRouter()
 createContentRouter()
 createExtendRouter()
 createInterceptorRouter()
+createConfigRouter()
 
 app.use(router)
 
@@ -96,5 +97,11 @@ function createExtendRouter() {
 function createInterceptorRouter() {
   router.get('/interceptor/get', (req, res) => {
     res.end('hello')
+  })
+}
+
+function createConfigRouter() {
+  router.post('/config/post', (req, res) => {
+    res.json(req.body)
   })
 }

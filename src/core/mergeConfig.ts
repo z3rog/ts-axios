@@ -13,7 +13,7 @@ function fromVal2Strategy(_: any, val2: any): any {
 
 function deepMergeStrategy(val1: any, val2: any): any {
   if (isPlainObject(val2)) {
-    return deepMerge(val2, val2)
+    return deepMerge(val1, val2)
   } else if (val2 !== undefined) {
     return val2
   } else if (isPlainObject(val1)) {
