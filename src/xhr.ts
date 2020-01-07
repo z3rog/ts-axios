@@ -12,6 +12,7 @@ export default function request(config: AxiosRequestConfig): AxiosPromise {
     addReadyStateChangeHandler(request, resolve, reject, config)
     addErrorHandler(request, reject, config)
     addTimeoutHandler(request, reject, config)
+    handleCancelToken(request, reject, config)
     sendXHRData(request, config)
   })
 }
@@ -112,6 +113,20 @@ function addTimeoutHandler(
     reject(
       createAxiosError(config, `Timeout ${config.timeout}ms exceeded`, 'ECONNABORTED', request)
     )
+  }
+}
+
+function handleCancelToken(
+  request: XMLHttpRequest,
+  reject: Function,
+  config: AxiosRequestConfig
+): void {
+  const { cancelToken } = config
+  if (cancelToken) {
+    cancelToken.promise.then(reason => {
+      request.abort()
+      reject(reason)
+    })
   }
 }
 
