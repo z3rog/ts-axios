@@ -5,6 +5,7 @@ import { flatternHeaders } from '../helpers/headers'
 import { transform } from './transform'
 
 function dispatchRequest(config: AxiosRequestConfig): AxiosPromise {
+  throwIfCancellationRequest(config) // check if cancelToken has been used(cancel before)
   processConfig(config)
   return xhr(config).then(res => transform(res.data, res.headers, res.config.transformResponse))
 }
@@ -21,6 +22,12 @@ function transformMethod(config: AxiosRequestConfig): string {
 function transformURL(config: AxiosRequestConfig): string {
   const { url, params } = config
   return buildURL(url!, params) // Type Assertion
+}
+
+function throwIfCancellationRequest(config: AxiosRequestConfig): void {
+  if (config.cancelToken) {
+    config.cancelToken.throwIfRequested()
+  }
 }
 
 export default dispatchRequest
