@@ -1,6 +1,8 @@
 import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from './types'
 import { parseHeaders } from './helpers/headers'
 import { createAxiosError } from './helpers/error'
+import { isURLSameOrigin } from './helpers/url'
+import cookie from './helpers/cookie'
 
 export default function request(config: AxiosRequestConfig): AxiosPromise {
   return new Promise<AxiosResponse>((resolve, reject) => {
@@ -30,8 +32,18 @@ function setResponseTypeNTimeout(
   }
 }
 
-function setHeaders(request: XMLHttpRequest, config: AxiosRequestConfig): void {
-  const { data = null, headers } = config
+function setHeaders(
+  request: XMLHttpRequest,
+  { data = null, headers, withCredentials, url, xsrfCookieName, xsrfHeaderName }: AxiosRequestConfig
+): void {
+  // handle xsrf relative
+  if ((withCredentials || isURLSameOrigin(url!)) && xsrfCookieName) {
+    const xsrfValue = cookie.read(xsrfCookieName)
+
+    if (xsrfValue && xsrfHeaderName) {
+      headers[xsrfHeaderName] = xsrfValue
+    }
+  }
 
   Object.keys(headers).forEach(name => {
     // if data === null, no need to set Content-Type
