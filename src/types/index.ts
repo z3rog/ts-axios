@@ -25,6 +25,7 @@ export type AxiosRequestConfigKey =
   | 'transformRequest'
   | 'transformResponse'
   | 'CancelToken'
+  | 'withCredentials'
 
 export interface AxiosRequestConfig {
   url?: string
@@ -37,6 +38,7 @@ export interface AxiosRequestConfig {
   transformRequest?: AxiosTransformer | AxiosTransformer[]
   transformResponse?: AxiosTransformer | AxiosTransformer[]
   cancelToken?: CancelToken
+  withCredentials?: boolean
 
   [propName: string]: any
 }

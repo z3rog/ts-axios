@@ -31,7 +31,8 @@ const defaultStrategyKeys: AxiosRequestConfigKey[] = [
   'timeout',
   'transformRequest',
   'transformResponse',
-  'CancelToken'
+  'CancelToken',
+  'withCredentials'
 ]
 const fromVal2StrategyKeys: AxiosRequestConfigKey[] = ['url', 'params', 'data']
 const deepMergeStrategyKeys: AxiosRequestConfigKey[] = ['headers']
@@ -61,7 +62,7 @@ export function mergeConfig(
   }
 
   function mergeField(key: string): void {
-    const strategy = strategyMap[key] || defaultStrategy
+    const strategy = strategyMap[key] || defaultStrategy // in case of some defaultStrategyKeys missing
     config[key] = strategy(config1[key], config2![key])
   }
 

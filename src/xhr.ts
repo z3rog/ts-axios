@@ -9,6 +9,7 @@ export default function request(config: AxiosRequestConfig): AxiosPromise {
     openXHR(request, config)
     setResponseTypeNTimeout(request, config)
     setHeaders(request, config)
+    setWithCredentials(request, config)
     addReadyStateChangeHandler(request, resolve, reject, config)
     addErrorHandler(request, reject, config)
     addTimeoutHandler(request, reject, config)
@@ -40,6 +41,15 @@ function setHeaders(request: XMLHttpRequest, config: AxiosRequestConfig): void {
       request.setRequestHeader(name, headers[name])
     }
   })
+}
+
+function setWithCredentials(
+  request: XMLHttpRequest,
+  { withCredentials }: AxiosRequestConfig
+): void {
+  if (withCredentials) {
+    request.withCredentials = withCredentials
+  }
 }
 
 function addReadyStateChangeHandler(
