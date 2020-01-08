@@ -30,6 +30,7 @@ createContentRouter()
 createExtendRouter()
 createInterceptorRouter()
 createConfigRouter()
+createCancelRouter()
 
 app.use(router)
 
@@ -105,3 +106,14 @@ function createConfigRouter() {
     res.json(req.body)
   })
 }
+
+function createCancelRouter() {
+  router.get('/cancel/get', (req, res) => {
+    setTimeout(() => res.json(req.body), 1000)
+  })
+
+  router.post('/cancel/post', (req, res) => {
+    setTimeout(() => res.json(req.body), 1000)
+  })
+}
+

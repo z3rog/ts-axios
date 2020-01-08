@@ -24,6 +24,7 @@ export type AxiosRequestConfigKey =
   | 'timeout'
   | 'transformRequest'
   | 'transformResponse'
+  | 'CancelToken'
 
 export interface AxiosRequestConfig {
   url?: string
