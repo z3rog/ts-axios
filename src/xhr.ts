@@ -57,7 +57,7 @@ function setHeaders(
 
   if (auth) {
     const { username, password } = auth
-    headers['Authorization'] = 'Basic' + btoa(`${username}:${password}`)
+    headers['Authorization'] = 'Basic ' + btoa(`${username}:${password}`)
   }
 
   Object.keys(headers).forEach(name => {
