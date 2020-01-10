@@ -4,6 +4,7 @@ const webpack = require('webpack')
 const webpackDevMiddleware = require('webpack-dev-middleware')
 const webpackHotMiddleware = require('webpack-hot-middleware')
 const WebpackConfig = require('./webpack.config')
+const atob = require('atob')
 
 const app = express()
 const compiler = webpack(WebpackConfig)
@@ -31,6 +32,7 @@ createExtendRouter()
 createInterceptorRouter()
 createConfigRouter()
 createCancelRouter()
+createAuthRouter()
 
 app.use(router)
 
@@ -114,6 +116,21 @@ function createCancelRouter() {
 
   router.post('/cancel/post', (req, res) => {
     setTimeout(() => res.json(req.body), 1000)
+  })
+}
+
+function createAuthRouter() {
+  router.post('/auth/post', (req, res) => {
+    const auth = req.headers.authorization
+    const [type, credentials] = auth.split(' ')
+    console.log(atob(credentials))
+    const [username, password] = atob(credentials).split(':')
+    if (type === 'Basic' && username === 'Leung' && password === '123456') {
+      res.json(req.body)
+    } else {
+      res.status(401)
+      res.end('UnAuthorization')
+    }
   })
 }
 
