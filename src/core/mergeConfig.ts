@@ -32,10 +32,12 @@ const defaultStrategyKeys: AxiosRequestConfigKey[] = [
   'transformRequest',
   'transformResponse',
   'CancelToken',
-  'withCredentials'
+  'withCredentials',
+  'onUploadProgress',
+  'onDownloadProgress'
 ]
 const fromVal2StrategyKeys: AxiosRequestConfigKey[] = ['url', 'params', 'data']
-const deepMergeStrategyKeys: AxiosRequestConfigKey[] = ['headers']
+const deepMergeStrategyKeys: AxiosRequestConfigKey[] = ['headers', 'auth']
 
 defaultStrategyKeys.forEach(key => (strategyMap[key] = defaultStrategy))
 fromVal2StrategyKeys.forEach(key => (strategyMap[key] = fromVal2Strategy))

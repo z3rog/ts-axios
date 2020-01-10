@@ -26,6 +26,11 @@ export type AxiosRequestConfigKey =
   | 'transformResponse'
   | 'CancelToken'
   | 'withCredentials'
+  | 'xsrfCookieName'
+  | 'xsrfHeaderName'
+  | 'auth'
+  | 'onDownloadProgress'
+  | 'onUploadProgress'
 
 export interface AxiosRequestConfig {
   url?: string
@@ -41,6 +46,7 @@ export interface AxiosRequestConfig {
   withCredentials?: boolean
   xsrfCookieName?: string
   xsrfHeaderName?: string
+  auth?: AxiosBasicCredentials
   onDownloadProgress?: (e: ProgressEvent) => void
   onUploadProgress?: (e: ProgressEvent) => void
 
@@ -162,4 +168,9 @@ export interface ResolvedFn<T> {
 
 export interface RejectedFn {
   (error: any): any
+}
+
+export interface AxiosBasicCredentials {
+  username: string
+  password: string
 }

@@ -36,7 +36,15 @@ function setResponseTypeNTimeout(
 
 function setHeaders(
   request: XMLHttpRequest,
-  { data = null, headers, withCredentials, url, xsrfCookieName, xsrfHeaderName }: AxiosRequestConfig
+  {
+    data = null,
+    headers,
+    withCredentials,
+    url,
+    xsrfCookieName,
+    xsrfHeaderName,
+    auth
+  }: AxiosRequestConfig
 ): void {
   // handle xsrf relative
   if ((withCredentials || isURLSameOrigin(url!)) && xsrfCookieName) {
@@ -45,6 +53,11 @@ function setHeaders(
     if (xsrfValue && xsrfHeaderName) {
       headers[xsrfHeaderName] = xsrfValue
     }
+  }
+
+  if (auth) {
+    const { username, password } = auth
+    headers['Authorization'] = 'Basic' + btoa(`${username}:${password}`)
   }
 
   Object.keys(headers).forEach(name => {
