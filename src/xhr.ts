@@ -3,6 +3,7 @@ import { parseHeaders } from './helpers/headers'
 import { createAxiosError } from './helpers/error'
 import { isURLSameOrigin } from './helpers/url'
 import cookie from './helpers/cookie'
+import { isFormData } from './helpers/util'
 
 export default function request(config: AxiosRequestConfig): AxiosPromise {
   return new Promise<AxiosResponse>((resolve, reject) => {
@@ -15,6 +16,7 @@ export default function request(config: AxiosRequestConfig): AxiosPromise {
     addReadyStateChangeHandler(request, resolve, reject, config)
     addErrorHandler(request, reject, config)
     addTimeoutHandler(request, reject, config)
+    addProgressHandler(request, config)
     handleCancelToken(request, reject, config)
     sendXHRData(request, config)
   })
@@ -135,6 +137,23 @@ function addTimeoutHandler(
     reject(
       createAxiosError(config, `Timeout ${config.timeout}ms exceeded`, 'ECONNABORTED', request)
     )
+  }
+}
+
+function addProgressHandler(
+  request: XMLHttpRequest,
+  { onDownloadProgress, onUploadProgress, data, headers }: AxiosRequestConfig
+) {
+  if (onDownloadProgress) {
+    request.onprogress = onDownloadProgress
+  }
+
+  if (onUploadProgress) {
+    request.upload.onprogress = onUploadProgress
+  }
+
+  if (isFormData(data)) {
+    delete headers['Content-Type'] // let browers set default content-type
   }
 }
 
