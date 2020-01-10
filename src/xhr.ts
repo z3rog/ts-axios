@@ -115,7 +115,9 @@ function addReadyStateChangeHandler(
     reject: Function
   ) {
     const { status } = response
-    if (status >= 200 && status < 300) {
+    const { validateStatus } = config
+
+    if (!validateStatus || validateStatus!(status)) {
       resolve(response)
     } else {
       reject(
