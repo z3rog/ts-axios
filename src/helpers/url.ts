@@ -38,6 +38,14 @@ export function isURLSameOrigin(requestURL: string): boolean {
   )
 }
 
+export function isAbsoluteURL(url: string): boolean {
+  return /(^[a-z][a-z\d\+\=\.]*:)?\/\//i.test(url)
+}
+
+export function combineURL(base: string, relative?: string): string {
+  return relative ? `${base.replace(/\/+$/, '')}/${relative.replace(/^\/+/, '')}` : base
+}
+
 export function buildURL(
   url: string,
   params?: object,

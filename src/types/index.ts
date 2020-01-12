@@ -34,6 +34,7 @@ export type AxiosRequestConfigKey =
 
 export interface AxiosRequestConfig {
   url?: string
+  baseURL?: string
   method?: string
   data?: any
   params?: any

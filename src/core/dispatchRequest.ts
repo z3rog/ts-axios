@@ -1,6 +1,6 @@
 import { AxiosRequestConfig, AxiosPromise, Method } from '../types'
 import xhr from '../xhr'
-import { buildURL } from '../helpers/url'
+import { buildURL, isAbsoluteURL, combineURL } from '../helpers/url'
 import { flatternHeaders } from '../helpers/headers'
 import { transform } from './transform'
 
@@ -20,7 +20,10 @@ function transformMethod(config: AxiosRequestConfig): string {
   return config.method ? config.method.toLowerCase() : 'get'
 }
 function transformURL(config: AxiosRequestConfig): string {
-  const { url, params } = config
+  let { url, baseURL, params } = config
+  if (baseURL && !isAbsoluteURL(url!)) {
+    url = combineURL(baseURL, url)
+  }
   return buildURL(url!, params) // Type Assertion
 }
 
