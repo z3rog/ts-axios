@@ -1,8 +1,12 @@
-import { isNullOrUndefined, isDate, isPlainObject } from './util'
+import { isNullOrUndefined, isDate, isPlainObject, isURLSearchParams } from './util'
 
 interface URLOrigin {
   protocol: string
   host: string
+}
+
+interface ParamsSerializer {
+  (params: any): string
 }
 
 function encode(val: string): string {
@@ -34,36 +38,47 @@ export function isURLSameOrigin(requestURL: string): boolean {
   )
 }
 
-export function buildURL(url: string, params?: object): string {
+export function buildURL(
+  url: string,
+  params?: object,
+  paramsSerializer?: ParamsSerializer
+): string {
   if (!params) {
     return url
   }
 
-  const parts: Array<string> = []
+  let serializedParams
 
-  Object.entries(params).forEach(([key, value]) => {
-    if (isNullOrUndefined(value)) {
-      return
-    }
-    let values = []
-    if (!Array.isArray(value)) {
-      values.push(value)
-    } else {
-      values = value
-      key += '[]'
-    }
+  if (paramsSerializer) {
+    serializedParams = paramsSerializer(params)
+  } else if (isURLSearchParams(params)) {
+    serializedParams = params.toString()
+  } else {
+    const parts: Array<string> = []
 
-    values.forEach(value => {
-      if (isDate(value)) {
-        value = value.toISOString()
-      } else if (isPlainObject(value)) {
-        value = JSON.stringify(value)
+    Object.entries(params).forEach(([key, value]) => {
+      if (isNullOrUndefined(value)) {
+        return
       }
-      parts.push(`${encode(key)}=${encode(value)}`)
-    })
-  })
+      let values = []
+      if (!Array.isArray(value)) {
+        values.push(value)
+      } else {
+        values = value
+        key += '[]'
+      }
 
-  let serializedParams = parts.join('&')
+      values.forEach(value => {
+        if (isDate(value)) {
+          value = value.toISOString()
+        } else if (isPlainObject(value)) {
+          value = JSON.stringify(value)
+        }
+        parts.push(`${encode(key)}=${encode(value)}`)
+      })
+    })
+  }
+
   if (serializedParams) {
     const markIndex = url.indexOf('#')
     if (markIndex !== -1) {
