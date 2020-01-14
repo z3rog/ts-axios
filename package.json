@@ -59,7 +59,7 @@
     ],
     "coveragePathIgnorePatterns": [
       "/node_modules/",
-      "/test"
+      "/test/"
     ],
     "coverageThreshold": {
       "global": {
