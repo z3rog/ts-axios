@@ -39,7 +39,7 @@ export function isURLSameOrigin(requestURL: string): boolean {
 }
 
 export function isAbsoluteURL(url: string): boolean {
-  return /(^[a-z][a-z\d\+\=\.]*:)?\/\//i.test(url)
+  return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url)
 }
 
 export function combineURL(base: string, relative?: string): string {
@@ -85,6 +85,8 @@ export function buildURL(
         parts.push(`${encode(key)}=${encode(value)}`)
       })
     })
+
+    serializedParams = parts.join('&')
   }
 
   if (serializedParams) {
